@@ -13,11 +13,13 @@ let schema = Yup.object().shape({
   password: Yup.string().required("Password required"),
 });
 
-
 const Login = () => {
    const dispatch = useDispatch();
    const navigate = useNavigate();
-  
+   const authState = useSelector((state) => state);
+
+   const { user, isError, isSuccess, isLoading, message } = authState.auth;
+    
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -26,24 +28,24 @@ const Login = () => {
     validationSchema:schema,
     onSubmit: values => {
       dispatch(login(values))
-      // alert(JSON.stringify(values, null, 2));
     },
   });
 
-  const authState = useSelector((state) => state);
-
-  const { user, isError, isSuccess, isLoading, message } = authState.auth;
-
+  
   useEffect(() => {
     if (isSuccess) {
       navigate("admin");
+      setTimeout(()=>{
+        window.location.reload();
+      },300)
     } else {
       navigate("");
     }
   }, [user, isError, isSuccess, isLoading,message]);
+  
 
   return (
-    <div className="py-5" style={{ background: "#ffd333" }}>
+    <div className="py-5" style={{ background: "#115f73", minHeight: "100vh" }}>
       <div className="my-5 w-25 bg-white rounded-3 mx-auto p-4">
       <h3 className="text-center title">Login</h3>
       <p className="text-center">Login to your account to continue.</p>
@@ -71,8 +73,8 @@ const Login = () => {
           </div>
 
         <button 
-            className="border-0 px-3 py-2 text-white fw-bold w-100 text-center text-decoration-none fs-5"
-            style={{ background: "#ffd333" }}
+            className="border-2 px-3 py-2 text-white fw-bold w-100 text-center text-decoration-none fs-5"
+            style={{ background: "#115f73" }}
             type="submit"
           >
             Login

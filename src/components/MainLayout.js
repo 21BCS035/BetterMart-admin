@@ -19,6 +19,8 @@ import {TbClipboardList} from "react-icons/tb"
 import {FaBlogger,FaList} from "react-icons/fa"
 import {RiAddBoxLine,RiCoupon2Line} from "react-icons/ri"
 import {CgList} from "react-icons/cg"
+import {AiOutlineLogout} from "react-icons/ai"
+import { useSelector } from 'react-redux';
 
 const { Header, Sider, Content } = Layout;
 
@@ -28,6 +30,9 @@ const MainLayout = () => {
     token: { colorBgContainer },
   } = theme.useToken();
   const navigate = useNavigate();
+
+  const authState = useSelector((state)=>state.auth);
+
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -44,7 +49,11 @@ const MainLayout = () => {
           defaultSelectedKeys={['']}
           onClick={({key})=>{
             if(key === "signout"){
-
+               localStorage.clear();
+              
+                navigate("/")
+                window.location.reload();
+              
             }
             else{
               navigate(key);
@@ -157,6 +166,11 @@ const MainLayout = () => {
                 },
               ]
             },
+            {
+              key:"signout",
+               icon:<AiOutlineLogout className='fs-4'/>,
+               label:'Log Out'
+            }
           ]}
         />
       </Sider>
@@ -170,21 +184,22 @@ const MainLayout = () => {
             }
           )}
             <div className="d-flex gap-4 align-items-center">
-            <div className="position-relative">
+            {/* <div className="position-relative">
               <IoIosNotifications className="fs-4" />
               <span className="badge bg-warning rounded-circle p-1 position-absolute">
                 3
               </span>
-            </div>
+            </div> */}
 
             <div className="d-flex gap-3 align-items-center dropdown">
               <div>
-                <img
+                {/* <img
                   width={32}
                   height={32}
                   src="https://stroyka-admin.html.themeforest.scompiler.ru/variants/ltr/images/customers/customer-4-64x64.jpg"
                   alt=""
-                />
+                /> */}
+                <h5>Welcome</h5>
               </div>
               <div
                 role="button"
@@ -192,8 +207,8 @@ const MainLayout = () => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <h5 className="mb-0">Arpit</h5>
-                <p className="mb-0">ar5136874yadav@gmail.com</p>
+                <h5 className="mb-0">{authState?.user?.firstname} {authState?.user?.lastname}</h5>
+                <p className="mb-0">{authState?.user?.email}</p>
               </div>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <li>

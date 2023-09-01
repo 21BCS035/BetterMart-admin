@@ -27,7 +27,7 @@ function App() {
    <Router>
     <Routes>
     <Route path="/" element={<Login />} />
-        <Route path="/reset-password" element={<Resetpassword />} />
+        <Route path="reset-password/:token" element={<Resetpassword />} />
         <Route path="/forgot-password" element={<Forgotpassword />} />
         <Route path="/admin" element={<MainLayout />}>
         <Route path='blog-list' element = {<Bloglist/>}/>

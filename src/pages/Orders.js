@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { getOrders } from '../features/auth/authSlice';
+import { getOrders, updateAOrder } from '../features/auth/authSlice';
 import { useDispatch,useSelector } from 'react-redux';
 import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
@@ -38,10 +38,10 @@ const columns = [
     dataIndex: "date",
   },
 
-  // {
-  //   title: "Action",
-  //   dataIndex: "action",
-  // },
+  {
+    title: "Action",
+    dataIndex: "action",
+  },
 ];
 
 
@@ -54,62 +54,43 @@ const Orders = () => {
   },[])
 
   const orderState = useSelector((state) => state.auth.orders)
-  const ordercolor = useSelector((state)=>state.auth.orders.products)
 
   const data1 = [];
   for (let i = 0; i < orderState?.length; i++) {
     data1.push({
       key: i + 1,
       name: orderState[i]?.user?.firstname,
-       product: orderState[i]?.products?.map((i,j)=>{
-        return (
-          <>
-           <ul key={j}>
-          {i?.product?.title}
-          </ul>
-          </>
-        )
-       }) ,
-       brand: orderState[i]?.products?.map((i,j)=>{
-        return (
-          <>
-           <ul key={j}>
-          {i.product.brand}
-          </ul>
-          </>
-        )
-       }) ,
-       color: orderState[i]?.products?.map((i,j)=>{
-        return (
-          <>
-           <ul key={j}>
-          {i.product.color}
-          </ul>
-          </>
-        )
-       }) ,
+      product: orderState[i]?.orderItems[0]?.product?.title
+        ,
+        brand: orderState[i]?.orderItems[0]?.product?.brand
+        ,
+        color: orderState[i]?.orderItems[0]?.color?.title
+      ,
        
-       //(
-      //   <Link to={`/admin/order/${orderState[i].orderby._id}`}>
-      //     View Orders
-      //   </Link>
-      // ),
-      amount: orderState[i].totalPriceAfterDiscount,
+      amount: "₹"+orderState[i].totalPriceAfterDiscount,
       date: new Date(orderState[i].createdAt).toLocaleString(),
       action: (
         <>
-          {/* <Link to="/" className=" fs-3 text-danger">
-            <BiEdit />
-          </Link> */}
-          {/* <Link className="ms-3 fs-3 text-danger" to="/">
-            <AiFillDelete />
-          </Link> */}
+          <select name='' defaultValue={orderState[i]?.orderStatus} onChange={(e)=>updateOrderStatus(orderState[i]?._id,e?.target?.value)} className='form-control form-select' id=''>
+            <option value="Ordered" disabled selected>Ordered</option>
+            <option value="Processed" >Processed</option>
+            <option value="Shipped" >Shipped</option>
+            <option value="Out For Delivery" >Out For Delivery</option>
+            <option value="Delivered" >Delivered</option>
+
+          </select>
         </>
       ),
     });
   }
 
-  
+  const updateOrderStatus = (a,b)=>{
+      dispatch(updateAOrder({id:a,status:b}));
+
+      setTimeout(()=>{
+        dispatch(getOrders());
+      },200)
+  }
 
   return (
     <div>
